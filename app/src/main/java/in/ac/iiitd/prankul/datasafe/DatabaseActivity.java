@@ -2,6 +2,7 @@ package in.ac.iiitd.prankul.datasafe;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,8 +37,8 @@ public class DatabaseActivity extends AppCompatActivity {
         rdg = (RadioGroup) findViewById(R.id.radio_group);
         action = (Button) findViewById(R.id.action);
         radio1 = (RadioButton) findViewById(R.id.radio1);
-        radio2 = (RadioButton) findViewById(R.id.radio1);
-        radio3 = (RadioButton) findViewById(R.id.radio1);
+        radio2 = (RadioButton) findViewById(R.id.radio2);
+        radio3 = (RadioButton) findViewById(R.id.radio3);
 
     }
 
@@ -52,9 +53,9 @@ public class DatabaseActivity extends AppCompatActivity {
     }
     public void clickRadio2(View view)
     {
-        name.setHint("Name");
+        name.setHint("Name (Required)");
         roll.setHint("Roll No. (Required)");
-        cgpa.setHint("CGPA");
+        cgpa.setHint("CGPA (Required)");
         name.setEnabled(true);
         cgpa.setEnabled(true);
         action.setText("Update");
@@ -64,7 +65,7 @@ public class DatabaseActivity extends AppCompatActivity {
         name.setHint("Name");
         roll.setHint("Roll No. (Required)");
         cgpa.setHint("CGPA");
-        roll.setText("");
+        name.setText("");
         cgpa.setText("");
         name.setEnabled(false);
         cgpa.setEnabled(false);
@@ -73,62 +74,79 @@ public class DatabaseActivity extends AppCompatActivity {
     public void clickAction(View view)
     {
         Boolean b = (name.getText().toString().equals("") && roll.getText().toString().equals("") && cgpa.getText().toString().equals(""));
+
         if(rdg.getCheckedRadioButtonId()==radio1.getId())
         {
             if(name.getText().toString().equals("") && roll.getText().toString().equals("") && cgpa.getText().toString().equals(""))
             {
-                Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT);
+                Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Cursor cs = ss.rawQuery("SELECT * FROM students WHERE roll = '"+roll.getText().toString()+"' ;",null);
+            int count=0;
+            cs.moveToFirst();
+            while(cs.moveToNext())
+                count++;
+
+            if(count > 0)
+            {
+                Toast.makeText(this,"Already Exists!",Toast.LENGTH_SHORT).show();
             }
             else
             {
-                db.addStudent(new Student(name.getText().toString(), roll.getText().toString(), cgpa.getText().toString()));
+                ContentValues cv = new ContentValues();
+                cv.put(DBMS.TABLE_ROLL,roll.getText().toString());
+                cv.put(DBMS.TABLE_CGPA,cgpa.getText().toString());
+                cv.put(DBMS.TABLE_NAME,name.getText().toString());
+                ss.insert(DBMS.TABLE,null,cv);
+                //db.addStudent(new Student(name.getText().toString(), roll.getText().toString(), cgpa.getText().toString()));
             }
         }
         if(rdg.getCheckedRadioButtonId()==radio2.getId())
         {
-            if(roll.getText().toString().equals(""))
+            if(name.getText().toString().equals("") && roll.getText().toString().equals("") && cgpa.getText().toString().equals(""))
             {
-                Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT);
+                Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT).show();
+                return;
             }
             else
             {
-                if(db.getStudent(roll.getText().toString())==null)
-                {
-                    Toast.makeText(this,"Entry not found!",Toast.LENGTH_SHORT);
-                }
-                else {
-                    String namee, rolll, cgpaa;
-                    rolll = roll.getText().toString();
-                    if (name.getText().toString().equals("")) {
-                        namee = db.getStudent(rolll).name;
-                    } else {
-                        namee = name.getText().toString();
-                    }
-                    if (cgpa.getText().toString().equals("")) {
-                        cgpaa = db.getStudent(rolll).cgpa;
-                    } else {
-                        cgpaa = cgpa.getText().toString();
-                    }
-                    db.addStudent(new Student(namee, rolll, cgpaa));
-                }
+                Toast.makeText(this,"Found to update!",Toast.LENGTH_SHORT).show();
+                ss.delete("students","roll=?", new String[] {roll.getText().toString()});
+                ContentValues cv = new ContentValues();
+                cv.put(DBMS.TABLE_ROLL,roll.getText().toString());
+                cv.put(DBMS.TABLE_CGPA,cgpa.getText().toString());
+                cv.put(DBMS.TABLE_NAME,name.getText().toString());
+                ss.insert(DBMS.TABLE,null,cv);
+//                    String namee, rolll, cgpaa;
+//                    rolll = roll.getText().toString();
+//                    if (name.getText().toString().equals("")) {
+//                        namee = db.getStudent(rolll).name;
+//                    } else {
+//                        namee = name.getText().toString();
+//                    }
+//                    if (cgpa.getText().toString().equals("")) {
+//                        cgpaa = db.getStudent(rolll).cgpa;
+//                    } else {
+//                        cgpaa = cgpa.getText().toString();
+//                    }
+//                    db.addStudent(new Student(namee, rolll, cgpaa));
+
+
             }
         }
         if(rdg.getCheckedRadioButtonId()==radio3.getId())
         {
+            Log.i("!!!","!!!");
             if(roll.getText().toString().equals(""))
             {
-                Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT);
+                Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT).show();
             }
             else
             {
-                if(db.getStudent(roll.getText().toString())==null)
-                {
-                    Toast.makeText(this,"Entry not found!",Toast.LENGTH_SHORT);
-                }
-                else
-                {
-                    db.deleteStudent(roll.getText().toString());
-                }
+                Toast.makeText(this,"Found to delete",Toast.LENGTH_SHORT).show();
+                ss.delete("students","roll=?", new String[] {roll.getText().toString()});
             }
         }
     }

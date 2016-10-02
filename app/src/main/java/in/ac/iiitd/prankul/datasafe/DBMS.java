@@ -31,7 +31,7 @@ public class DBMS extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = "create table " + TABLE + " ( " +
-                TABLE_ROLL + " text, " +
+                TABLE_ROLL + " text primary key , " +
                 TABLE_NAME + " text, " +
                 TABLE_CGPA + " text " +
                 ");";
