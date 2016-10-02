@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+
     public void clickFiles(View view)
     {
         Intent i = new Intent(this, FileActivity.class);

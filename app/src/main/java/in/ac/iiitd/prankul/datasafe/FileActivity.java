@@ -86,6 +86,7 @@ public class FileActivity extends AppCompatActivity {
 
     public void clickDelete(View view)
     {
+
         rdg.check(radio1.getId());
         content.setText("");
         if(file.exists())

@@ -110,6 +110,7 @@ public class DatabaseActivity extends AppCompatActivity {
                 Toast.makeText(this,"Fill all required fields!",Toast.LENGTH_SHORT).show();
                 return;
             }
+
             else
             {
                 Toast.makeText(this,"Found to update!",Toast.LENGTH_SHORT).show();

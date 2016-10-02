@@ -15,6 +15,7 @@ public class ShowDatabaseActivity extends AppCompatActivity {
 
         DBMS db = new DBMS(this,null,null,1);
 
+
         LinearLayout linear = (LinearLayout) findViewById(R.id.linear);
         TextView text;
 

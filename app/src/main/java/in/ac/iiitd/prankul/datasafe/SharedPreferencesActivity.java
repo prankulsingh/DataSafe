@@ -73,6 +73,7 @@ public class SharedPreferencesActivity extends AppCompatActivity {
 
     public void updateTable()
     {
+
         table.removeAllViews();
         SharedPreferences sp = getSharedPreferences("MySharedPreference",MODE_PRIVATE);
         Map<?,?> hm = sp.getAll();
